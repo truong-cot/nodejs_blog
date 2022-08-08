@@ -3,8 +3,15 @@ const express = require('express');
 const morgan = require('morgan');
 const handlebars = require('express-handlebars');
 
+//
+const route = require('./routes');
+const db = require('./config/db');
+
 const app = express();
 const port = 8000;
+
+// Connect database
+db.connect();
 
 // Template engine => defaultLayout(views/layout/main), config extname => .hbs
 app.engine('hbs', handlebars.engine({defaultLayout: 'main', extname: '.hbs'}));
@@ -17,15 +24,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 // HTTP logger
 app.use(morgan('combined'));
 
-// Create page
-app.get('/', (req, res) => {
-	res.render('home');
-});
+// Routes init
+route(app);
 
-app.get('/news', (req, res) => {
-	res.render('news');
-});
-
+// Console log
 app.listen(port, () => {
 	console.log(`Example app listening on port http://localhost:${port}`);
 });
